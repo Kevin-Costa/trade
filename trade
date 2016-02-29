@@ -1,0 +1,74 @@
+#!/usr/bin/python 
+# -*- coding:utf-8 -*-
+
+import os, sys
+import re
+import time
+import math
+import random
+
+########################################################################################
+
+def moyen(moy, nb):
+    i = 0
+    moyenne = 0
+    while (i != nb):
+        moyenne += moy[0]
+        i += 1
+    return (int(moyenne / nb))
+
+########################################################################################
+
+cours = list()
+argent = int(sys.stdin.readline())
+dayMax = int(sys.stdin.readline())
+dayPass = 0
+action = 0
+moy = list()
+moyenne = 0
+while (dayPass < dayMax):
+    line = sys.stdin.readline()
+    try:
+        cours.append(int(line))
+    except:
+        sys.exit(1)
+
+######################## ALGO ##########################
+
+    moy.append(cours[dayPass])
+    if (len(moy) > int(dayMax / 10)):
+        moy.pop(0)
+    if (len(moy) == int(dayMax / 10)):
+        moyenne = moyen(moy, len(moy))
+    if (dayPass < int(dayMax / 10)):
+        print("wait")
+    else:
+        if (dayPass == dayMax - 1 and action != 0):
+            print ("sell %d" % action)
+            action = 0
+        elif (int(line) > moyenne and action != 0):
+            if (int(action / 10) != 0):
+                print ("sell %d" % (int(action / 10)))
+                action -= int(action / 10)
+                argent += ((int(line) - (0.0015 * int(line))) * int(action / 10))
+            else:
+                print ("sell 1")
+                action -= 1
+                argent += (int(line) - (0.0015 * int(line)))
+        elif (int(line) < moyenne and argent - int(line) + (0.0015 * int(line)) > 0):
+            if (int(action / 10) != 0):
+                print ("buy %d" % (int(action / 10)))
+                action += int(action / 10)
+                argent -= (int(action / 10) * (int(line) + (0.0015 * int(line))))
+            else:
+                print ("buy 1")
+                action += 1
+                argent -= (int(line) + (0.0015 * int(line)))
+        else:
+            print("wait")
+
+
+###################### FIN ALGO #########################
+
+    argent = int(argent)
+    dayPass += 1
